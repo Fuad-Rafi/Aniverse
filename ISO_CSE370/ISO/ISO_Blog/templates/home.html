@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}ISO{% endblock %}
+
+{% block content %}
+  <h1>Welcome to Aniverse</h1>
+
+  <ul>
+    {% for post in object_list %}
+      <br/>
+      <div class="border shadow-lg" id="box">
+        <style>
+          #box {
+            background: #6c757d;
+            padding: 15px; /* Add padding for better visual appeal */
+            margin-bottom: 15px; /* Add margin between each box */
+            color: #000000; /* Text color inside the box */
+          }
+
+          #box h3 {
+            color: #ffffff; /* Heading color inside the box */
+          }
+
+          #box a {
+            color: #ffffff; /* Link color inside the box */
+          }
+
+          #box small {
+            color: #6c757d; /* Small text color inside the box */
+          }
+
+          #box img {
+            max-width: 100%; /* Make sure images don't overflow their container */
+            height: auto; /* Maintain image aspect ratio */
+            margin-top: 10px; /* Add some space above the image */
+          }
+        </style>
+
+        <li>
+          <h3>
+            <a href="{% url 'post_details' post.pk %}">{{ post.title }}</a> in
+            <a href="{% url 'category' post.category|slugify %}">
+              <h5>{{ post.category }}</h5>
+            </a>
+          </h3>
+          by <b>{{ post.author.first_name }} {{ post.author.last_name }}</b><br/>
+          Posted on: {{ post.post_date }}
+          <small>
+            {% if user.is_authenticated %}
+              {% if user.id == post.author.id or user.is_superuser %}
+                - <a href="{% url 'update_post' post.pk %}">
+                  <button type="button" class="btn btn-primary btn-sm">Edit</button>
+                </a>
+                <a href="{% url 'delete_post' post.pk %}">
+                  <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                </a>
+              {% endif %}
+            {% endif %}
+            <br/>
+          </small>
+          <i><b>
+            {% if post.header_image %}
+              <img src='{{ post.header_image.url }}' alt="Header Image">
+              <br/>
+            {% endif %}
+            {{ post.snippet }}
+          </b></i>
+        </li>
+      </div>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}ISO{% endblock %}
+
+
+{% block content %}
+
+
+<h1> Profile Page </h1>
+<br>
+<div class="card mb-3" style="background-color: #6c757d;">
+    <div class="row g-0">
+      <div class="col-md-2">
+          <img src="{{  page_user.profile_pic.url }}" 
+          class="card-img" width="200" height="180" alt="Profile Picture">
+      </div>
+      <div class="col-md-10">
+        <div class="card-body">
+          <h5 class="card-title">
+            {{ page_user.user.first_name }} 
+            {{ page_user.user.last_name }}
+          </h5>
+          <p class="small text-muted">
+            {{  page_user.bio }}
+          </p>
+          <p class="card-text">
+            <a href="{{  page_user.fb_url }}"> Facebook |</a>
+            <a href="{{  page_user.fb_url }}"> Instagram |</a>
+            <a href="{{  page_user.fb_url }}"> Twitter |</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ul>
+    {% for post in object_list %}
+        <br/>
+        <div id="box" class="border shadow-lg">
+            <style>
+                .box
+                {
+                 background: #000000;
+    
+                }
+            </style>    
+            <li><h3><a href="{% url 'post_details' post.pk %}">{{post.title}}</a> in <a href="{%url 'category' post.category|slugify %}">
+            <h5>{{ post.category }}</h5></a></h3>
+            by <b>{{ post.author.first_name }}
+            {{ post.author.last_name }}</b> </br>
+            
+            Posted on: {{ post.post_date }}
+            <small>
+                {% if user.is_authenticated %}
+                    {% if user.id == post.author.id or user.is_superuser %}
+                        - <a href="{% url 'update_post' post.pk %}"><button type="button" class="btn btn-primary btn-sm">Edit</button></a>
+    
+                        <a href="{% url 'delete_post' post.pk %}"><button type="button" class="btn btn-primary btn-sm">Delete</button></a>
+                    {% endif %}    
+                {% endif %}
+            </br>   
+            </small><br/><I><b>
+             
+                {% if post.header_image %}
+                <img src='{{ post.header_image.url }}'></br>
+                {% endif %}
+                {{post.snippet}}
+            </I></b>
+        </li>
+        </div>
+        
+    {% endfor %} 
+    </ul>
+
+{% endblock %}
+

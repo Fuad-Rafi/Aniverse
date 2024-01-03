@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ post.title_tag}}{% endblock %}
+
+
+{% block content %}
+
+current user: {{ user.id }}
+post author: {{ post.author.id }}
+
+<h1>{{ post.title }} - {{ post.author.id }}</h1>
+<small> By: 
+    {{ post.author.first_name }} 
+    {{ post.author.last_name }} - 
+    {{ post.post_date }}
+    {% if user.is_authenticated %}
+        {% if user.id == post.author.id or user.is_superuser %}
+            <a href="{% url 'update_post' post.pk %}">(Edit)</a>
+
+            <a href="{% url 'delete_post' post.pk %}">(Delete)</a>
+        {% endif %}    
+    {% endif %}
+
+</a></small></br>
+<hr>
+<br/>
+{% if post.header_image %}
+
+<img src='{{ post.header_image.url }}'><br/><br/>
+{% endif %}
+{{ post.body|safe }}
+<br/><br/>
+<a href="{% url 'Home' %}" class= "btn btn-dark" >Back</a>
+
+<br/><br/>
+<hr>
+<br/>
+<form action= "{% url 'like_post' post.pk %}"
+method= "POST">
+    {% csrf_token %}
+
+    <!-- Using certian conditional logics -->
+
+    {% if user.is_authenticated %}    
+        {% if liked %}
+            <button type="submit", name="post_id", value="{{ post.id }}", class="btn btn-danger btn-sm"> Disike </button>         
+        {% else %}
+            <button type="submit", name="post_id", value="{{ post.id }}", class="btn btn-success btn-sm"> Like </button>  
+        {% endif %}
+    {% else %}
+        <h3> <a href="{% url 'login'%}">Login</a> to like </h3>
+    {% endif %}
+        - {{ total_likes }} Likes
+
+    </form>
+
+    <br>
+
+
+    <div class="card mb-3" style="background-color: #6c757d;">
+        <div class="row g-0">
+          <div class="col-md-2">
+              <img src="{{  post.author.profile.profile_pic.url }}" 
+              class="card-img" width="200" height="180" alt="Profile Picture">
+          </div>
+          <div class="col-md-10">
+            <div class="card-body">
+              <h5 class="card-title">
+                {{ post.author.first_name }} 
+                {{ post.author.last_name }}
+              </h5>
+              <p class="small text-muted">
+                {{  post.author.profile.bio }}
+              </p>
+              <p class="card-text">
+                <a href="{% url 'show_profile_page' post.author.profile.id %}"> Profile Page </a>
+                <br>
+                <a href="{{  post.author.profile.fb_url }}"> Facebook |</a>
+                <a href="{{  post.author.profile.fb_url }}"> Instagram |</a>
+                <a href="{{  post.author.profile.fb_url }}"> Twitter |</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+
+
+{% endblock %}
