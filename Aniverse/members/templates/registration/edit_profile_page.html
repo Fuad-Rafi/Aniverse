@@ -1,27 +1,26 @@
 {% extends 'base.html' %}
 {% block title %}Edit Profile Page{% endblock %}
 
-
 {% block content %}
-
-
 {% if user.is_authenticated %}
-    <h1>Edit Profile Page</h1>
-    <br></br>
+    <section class="page-shell">
+        <header class="page-header">
+            <h1 class="page-title">Edit Profile Page</h1>
+            <p class="page-subtitle">Update your public profile and bio.</p>
+        </header>
 
-    <div class='form-group'>
-        <form method='POST' enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="btn btn-primary">Update Profile Page</button>
-    </div>
-    
-
+        <div class="panel-card">
+            <form method='POST' enctype="multipart/form-data" class="app-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="app-actions">
+                    <button class="btn btn-primary">Update Profile</button>
+                    <a href="{% url 'Home' %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </section>
 {% else %}
-<br/><br/><br/>
-<h3>Ahm Ahm Ahm, anything you are looking for?</h3>
-    
+    <section class="page-shell"><p class="forbidden-note">You need to log in first.</p></section>
 {% endif %}
-
-
 {% endblock %}

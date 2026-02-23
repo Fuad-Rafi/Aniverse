@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <header class="page-header">
+        <h1 class="page-title">Search Results</h1>
+        <p class="page-subtitle">Showing results for "<strong>{{query}}</strong>"</p>
+    </header>
+
+    {% if error %}
+        <p class="forbidden-note">The search query was empty.</p>
+    {% endif %}
+
+    {% if allPosts|length < 1 %}
+        <div class="panel-card">
+            <p><strong>No results found for "{{query}}"</strong></p>
+            <p class="muted-note">Suggestions:</p>
+            <ul>
+                <li>Try different keywords</li>
+                <li>Try fewer keywords</li>
+                <li>Try more relevant keywords</li>
+            </ul>
+        </div>
+    {% else %}
+        <ul class="list-clean">
+        {% for post in allPosts %}
+            <li class="list-item-card">
+                <h4><a href="{% url 'post_details' post.pk %}">{{post.title}}</a></h4>
+                <p class="muted-note">
+                    <a href="{%url 'category' post.category|slugify %}">{{ post.category }}</a> · 
+                    {{ post.author.first_name }} {{ post.author.last_name }} · {{ post.post_date }}
+                </p>
+                <p>{{post.snippet}}</p>
+                {% if user.is_authenticated and user.id == post.author.id %}
+                    <div class="app-actions">
+                        <a href="{% url 'update_post' post.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <a href="{% url 'delete_post' post.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</section>
+{% endblock %}
+

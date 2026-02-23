@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Post Categories{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <header class="page-header">
+        <h1 class="page-title">Post Categories</h1>
+        <p class="page-subtitle">Browse content by topic.</p>
+    </header>
+
+    <ul class="list-clean">
+        {% for item in cat_menu_list %}
+            <li class="list-item-card">
+                <h4><a href="{%url 'category' item|slugify %}">{{ item }}</a></h4>
+            </li>
+        {% empty %}
+            <li class="list-item-card">No categories available yet.</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

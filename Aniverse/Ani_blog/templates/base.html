@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/modern-home.css' %}">
+  <link rel="stylesheet" href="{% static 'css/social-home.css' %}">
+  {% block extra_head %}{% endblock %}
+
+  <title>{% block title %}Aniverse{% endblock %}</title>
+</head>
+<body>
+  {% block top_nav %}
+  <header class="social-header">
+    <div class="social-topbar">
+      <div class="topbar-left">
+        {% block search_bar %}{% endblock %}
+      </div>
+      <div class="social-brand-wrap">
+        <img src="/media/images/icon.png" alt="Aniverse" class="social-logo-icon">
+        <span class="social-brand-text">Aniverse</span>
+      </div>
+      <div class="topbar-right">
+        {% block topbar_right_content %}
+          {% if user.is_authenticated %}
+            <form method="post" action="{% url 'logout' %}" class="topbar-logout-form">
+              {% csrf_token %}
+              <button type="submit" class="topbar-logout-btn"><i class="bi bi-box-arrow-right"></i> Logout</button>
+            </form>
+          {% endif %}
+        {% endblock %}
+      </div>
+    </div>
+  </header>
+  {% endblock %}
+
+  <div class="app-layout">
+    <aside class="app-sidebar">
+      <nav class="sidebar-nav">
+        <a href="{% url 'Home' %}" class="sidebar-link">
+          <i class="bi bi-house-door-fill"></i>
+          <span>Home</span>
+        </a>
+        <a href="{% url 'category-list' %}" class="sidebar-link">
+          <i class="bi bi-grid-3x3-gap-fill"></i>
+          <span>Categories</span>
+        </a>
+        <a href="{% url 'edit_profile' %}" class="sidebar-link">
+          <i class="bi bi-gear-fill"></i>
+          <span>Settings</span>
+        </a>
+        <a href="{% url 'add_category' %}" class="sidebar-link">
+          <i class="bi bi-plus-circle-fill"></i>
+          <span>Add Category</span>
+        </a>
+        <a href="/admin/" class="sidebar-link">
+          <i class="bi bi-shield-fill-check"></i>
+          <span>Admin Panel</span>
+        </a>
+        {% block sidebar_extra %}{% endblock %}
+      </nav>
+    </aside>
+
+    <main class="app-main-content">
+      {% block content %}
+      {% endblock %}
+    </main>
+  </div>
+
+  {% block footer %}{% endblock %}
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>

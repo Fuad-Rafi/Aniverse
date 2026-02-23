@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Aniverse Home{% endblock %}
+
+{% block topbar_right_content %}
+  <form method="get" action="{% url 'search' %}" class="social-top-search">
+    <i class="bi bi-search"></i>
+    <input type="search" name="searching" placeholder="Search">
+  </form>
+{% endblock %}
+
+{% block sidebar_extra %}
+  <div class="sidebar-divider"></div>
+  {% if user.is_authenticated %}
+    <form method="post" action="{% url 'logout' %}" class="sidebar-logout-form">
+      {% csrf_token %}
+      <button type="submit" class="sidebar-link sidebar-logout-btn">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Logout</span>
+      </button>
+    </form>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <main class="social-feed-page">
+    <section class="composer-card">
+      <div class="composer-left">
+        <div class="avatar-mini">
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <div class="composer-user-info">
+          <h5>{{ user.first_name }} {{ user.last_name|default:user.username }}</h5>
+          <input type="text" class="composer-textbox" placeholder="What's on your mind" onclick="window.location.href='{% url 'add_post' %}'" readonly>
+        </div>
+      </div>
+      <a href="{% url 'add_post' %}" class="composer-post-btn">Post</a>
+    </section>
+
+    {% for post in object_list %}
+      <article class="feed-card">
+        <div class="feed-card-head">
+          <div class="avatar-mini">
+            <i class="bi bi-person-fill"></i>
+          </div>
+          <div>
+            <h4>{{ post.author.first_name }} {{ post.author.last_name|default:post.author.username }}</h4>
+            <p>{{ post.post_date }}</p>
+          </div>
+          <a href="{% url 'post_details' post.pk %}" class="feed-menu"><i class="bi bi-three-dots"></i></a>
+        </div>
+
+        <div class="feed-card-body">
+          <p>
+            <a href="{% url 'category' post.category|slugify %}" class="hash-tag">#{{ post.category }}</a>
+            {{ post.snippet|default:post.title }}
+          </p>
+          {% if post.header_image %}
+            <a href="{% url 'post_details' post.pk %}">
+              <img src="{{ post.header_image.url }}" alt="{{ post.title }}">
+            </a>
+          {% else %}
+            <a href="{% url 'post_details' post.pk %}">
+              <img src="{% static 'images/default.jpg' %}" alt="Default post image">
+            </a>
+          {% endif %}
+        </div>
+
+        <div class="feed-stats">
+          <span>{{ post.total_likes }} Likes</span>
+          <span>Comments</span>
+        </div>
+
+        <div class="feed-actions">
+          <a href="{% url 'post_details' post.pk %}"><i class="bi bi-chat-left-text"></i></a>
+          <a href="{% url 'post_details' post.pk %}"><i class="bi bi-arrow-repeat"></i></a>
+          <a href="{% url 'post_details' post.pk %}"><i class="bi bi-heart"></i></a>
+        </div>
+
+        {% if user.is_authenticated %}
+          {% if user.id == post.author.id or user.is_superuser %}
+            <div class="feed-admin-actions">
+              <a href="{% url 'update_post' post.pk %}">Edit</a>
+              <a href="{% url 'delete_post' post.pk %}">Delete</a>
+            </div>
+          {% endif %}
+        {% endif %}
+      </article>
+    {% empty %}
+      <article class="feed-card empty-state">
+        <h4>No posts yet</h4>
+        <p>Be the first to share something on the feed.</p>
+        <a href="{% url 'add_post' %}" class="btn btn-sm btn-primary">Create post</a>
+      </article>
+    {% endfor %}
+
+    <div class="feed-attribution">
+      <a href="https://www.flaticon.com/free-icons/letter-a" title="letter a icons" target="_blank" rel="noopener">Letter a icons created by NajmunNahar - Flaticon</a>
+    </div>
+  </main>
+{% endblock %}
+
+{% block footer %}{% endblock %}

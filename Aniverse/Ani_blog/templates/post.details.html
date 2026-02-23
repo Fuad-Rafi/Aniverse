@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ post.title_tag}}{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <header class="page-header">
+        <h1 class="page-title">{{ post.title }}</h1>
+        <p class="page-subtitle">
+            By {{ post.author.first_name }} {{ post.author.last_name }} · {{ post.post_date }} · 
+            <a href="{% url 'category' post.category|slugify %}">{{ post.category }}</a>
+        </p>
+    </header>
+
+    {% if user.is_authenticated %}
+        {% if user.id == post.author.id or user.is_superuser %}
+            <div class="panel-card">
+                <div class="app-actions">
+                    <a href="{% url 'update_post' post.pk %}" class="btn btn-sm btn-outline-secondary">Edit Post</a>
+                    <a href="{% url 'delete_post' post.pk %}" class="btn btn-sm btn-outline-danger">Delete Post</a>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <article class="panel-card">
+        {% if post.header_image %}
+            <img src='{{ post.header_image.url }}' class="post-detail-image" alt="{{ post.title }}">
+        {% endif %}
+        <div class="post-body">{{ post.body|safe }}</div>
+    </article>
+
+    <div class="panel-card">
+        <form action="{% url 'like_post' post.pk %}" method="POST">
+            {% csrf_token %}
+            {% if user.is_authenticated %}    
+                {% if liked %}
+                    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-danger">
+                        <i class="bi bi-heart-fill"></i> Unlike
+                    </button>         
+                {% else %}
+                    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-primary">
+                        <i class="bi bi-heart"></i> Like
+                    </button>  
+                {% endif %}
+            {% else %}
+                <p class="muted-note"><a href="{% url 'login'%}">Login</a> to like this post.</p>
+            {% endif %}
+            <span class="muted-note">{{ total_likes }} Likes</span>
+        </form>
+    </div>
+
+    {% if post.author.profile %}
+        <div class="panel-card">
+            <div class="row g-0">
+                <div class="col-md-2">
+                    {% if post.author.profile.profile_pic %}
+                        <img src="{{ post.author.profile.profile_pic.url }}" class="profile-image" alt="Profile Picture">
+                    {% endif %}
+                </div>
+                <div class="col-md-10">
+                    <h5>{{ post.author.first_name }} {{ post.author.last_name }}</h5>
+                    <p class="muted-note">{{ post.author.profile.bio }}</p>
+                    <div class="app-actions">
+                        <a href="{% url 'show_profile_page' post.author.profile.id %}" class="btn btn-sm btn-outline-primary">View Profile</a>
+                        {% if post.author.profile.fb_url %}
+                            <a href="{{ post.author.profile.fb_url }}" class="btn btn-sm btn-outline-secondary">Social Links</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="app-actions">
+        <a href="{% url 'Home' %}" class="btn btn-outline-secondary">Back to Feed</a>
+    </div>
+</section>
+{% endblock %}

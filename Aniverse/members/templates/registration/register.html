@@ -1,19 +1,22 @@
 {% extends 'base.html' %}
 {% block title %}Register{% endblock %}
 
-
 {% block content %}
+<section class="page-shell">
+    <header class="page-header">
+        <h1 class="page-title">Register</h1>
+        <p class="page-subtitle">Create your Aniverse account.</p>
+    </header>
 
-<h1>Welcome to the world of ISO!</h1>
-<br></br>
-
-<div class='form-group'>
-    <form method='POST'>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-success">Register</button>
-</div>    
-    
-    
-    
+    <div class="panel-card">
+        <form method='POST' class="app-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="app-actions">
+                <button class="btn btn-primary">Register</button>
+                <a href="{% url 'login' %}" class="btn btn-outline-secondary">Already have an account?</a>
+            </div>
+        </form>
+    </div>
+</section>
 {% endblock %}

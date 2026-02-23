@@ -1,20 +1,22 @@
 {% extends 'base.html' %}
-{% block title %}Create Profile Page{% endblock %}
+{% block title %}Create a new blog post{% endblock %}
+
 
 {% block content %}
 {% if user.is_authenticated %}
     <section class="page-shell">
         <header class="page-header">
-            <h1 class="page-title">Create Profile Page</h1>
-            <p class="page-subtitle">Set up your public profile.</p>
+            <h1 class="page-title">Create Post</h1>
+            <p class="page-subtitle">Share something with your community.</p>
         </header>
 
         <div class="panel-card">
             <form method='POST' enctype="multipart/form-data" class="app-form">
                 {% csrf_token %}
                 {{ form.as_p }}
+                {{ form.media }}
                 <div class="app-actions">
-                    <button class="btn btn-primary">Create Profile</button>
+                    <button class="btn btn-primary">Publish Post</button>
                     <a href="{% url 'Home' %}" class="btn btn-outline-secondary">Cancel</a>
                 </div>
             </form>
@@ -26,6 +28,11 @@
         document.getElementById("number").value = name;
     </script>
 {% else %}
-    <section class="page-shell"><p class="forbidden-note">You need to log in first.</p></section>
+<section class="page-shell">
+    <p class="forbidden-note">You need to log in before creating a post.</p>
+</section>
+    
 {% endif %}
+
+
 {% endblock %}

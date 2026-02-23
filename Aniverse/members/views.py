@@ -12,7 +12,7 @@ from django.urls import reverse_lazy
 
 from .forms import SignUpForm, EditProfileForm
 
-from ISO_Blog.models import Profile
+from Ani_blog.models import Profile
 
 # Create your views here.
 
