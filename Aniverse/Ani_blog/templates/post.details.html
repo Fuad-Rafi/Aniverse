@@ -50,6 +50,32 @@
         </form>
     </div>
 
+    <div class="panel-card">
+        <h4>Comments</h4>
+        {% if user.is_authenticated %}
+            <form action="{% url 'add_comment' post.pk %}" method="POST" class="app-form">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <div class="app-actions">
+                    <button type="submit" class="btn btn-primary btn-sm">Add Comment</button>
+                </div>
+            </form>
+        {% else %}
+            <p class="muted-note"><a href="{% url 'login' %}">Login</a> to add a comment.</p>
+        {% endif %}
+
+        <hr>
+
+        {% for comment in comments %}
+            <div class="list-item-card">
+                <p class="mb-1"><strong>{{ comment.author.username }}</strong> · <span class="muted-note">{{ comment.created_on }}</span></p>
+                <p class="mb-0">{{ comment.body }}</p>
+            </div>
+        {% empty %}
+            <p class="muted-note">No comments yet. Be the first to comment.</p>
+        {% endfor %}
+    </div>
+
     {% if post.author.profile %}
         <div class="panel-card">
             <div class="row g-0">

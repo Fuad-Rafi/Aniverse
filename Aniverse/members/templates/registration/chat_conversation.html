@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Chat with {{ chat_friend.username }}{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <header class="page-header">
+        <h1 class="page-title">Inbox</h1>
+        <p class="page-subtitle">Chat with {{ chat_friend.username }}</p>
+    </header>
+
+    <div class="panel-card conversation-page-card">
+        <div class="conversation-thread">
+            {% for chat_message in chat_messages %}
+                <div class="chat-bubble {% if chat_message.sender_id == user.id %}chat-bubble-me{% else %}chat-bubble-them{% endif %}">
+                    {{ chat_message.body }}
+                </div>
+            {% empty %}
+                <p class="muted-note">No messages yet. Say hi!</p>
+            {% endfor %}
+        </div>
+
+        <form method="post" action="{% url 'send_direct_message' chat_friend.id %}" class="chat-send-form mt-3">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'chat_conversation' chat_friend.id %}">
+            <input type="text" name="message" class="form-control" placeholder="Type a message..." maxlength="1000" required>
+            <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

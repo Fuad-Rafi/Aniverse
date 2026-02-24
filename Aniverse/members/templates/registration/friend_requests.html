@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Friend Requests{% endblock %}
+
+{% block content %}
+<section class="page-shell">
+    <header class="page-header">
+        <h1 class="page-title">Friend Requests</h1>
+        <p class="page-subtitle">Manage incoming and sent requests.</p>
+    </header>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info" role="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="panel-card">
+        <h4>Incoming Requests</h4>
+        <ul class="list-clean">
+            {% for req in incoming_requests %}
+                <li class="list-item-card d-flex justify-content-between align-items-center">
+                    <span>{{ req.sender.username }}</span>
+                    <form method="post" action="{% url 'accept_friend_request' req.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-primary">Accept</button>
+                    </form>
+                </li>
+            {% empty %}
+                <li class="list-item-card">No incoming friend requests.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="panel-card mt-3">
+        <h4>Sent Requests</h4>
+        <ul class="list-clean">
+            {% for req in sent_requests %}
+                <li class="list-item-card">{{ req.receiver.username }} <span class="muted-note">(Pending)</span></li>
+            {% empty %}
+                <li class="list-item-card">No sent requests.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="panel-card mt-3">
+        <h4>Friends</h4>
+        <ul class="list-clean">
+            {% for friend in friends %}
+                <li class="list-item-card">{{ friend.username }}</li>
+            {% empty %}
+                <li class="list-item-card">No friends yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endblock %}

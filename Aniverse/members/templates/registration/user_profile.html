@@ -21,6 +21,25 @@
                 {% if page_user.fb_url %}
                     <a href="{{ page_user.fb_url }}" class="btn btn-sm btn-outline-secondary">Social Links</a>
                 {% endif %}
+                {% if user.is_authenticated and user != page_user.user %}
+                    <div class="app-actions mt-2">
+                        {% if is_friend %}
+                            <span class="btn btn-sm btn-success disabled">Friends</span>
+                        {% elif pending_sent %}
+                            <span class="btn btn-sm btn-outline-secondary disabled">Request Sent</span>
+                        {% elif pending_received %}
+                            <form method="post" action="{% url 'accept_friend_request' pending_received.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-primary">Accept Friend Request</button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{% url 'send_friend_request' page_user.user.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-primary">Add Friend</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -30,7 +49,7 @@
     </header>
 
     <ul class="list-clean">
-    {% for post in object_list %}
+    {% for post in user_posts %}
         <li class="list-item-card">
             <h4><a href="{% url 'post_details' post.pk %}">{{post.title}}</a></h4>
             <p class="muted-note">

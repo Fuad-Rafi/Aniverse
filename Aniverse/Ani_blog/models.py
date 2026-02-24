@@ -56,3 +56,50 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('post_details', args=(self.id,))
         # return reverse("Home")
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    body = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_on']
+
+    def __str__(self):
+        return f'{self.author} on {self.post}'
+
+
+class FriendRequest(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    )
+
+    sender = models.ForeignKey(User, related_name='sent_friend_requests', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='received_friend_requests', on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_on = models.DateTimeField(auto_now_add=True)
+    responded_on = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('sender', 'receiver')
+        ordering = ['-created_on']
+
+    def __str__(self):
+        return f'{self.sender} -> {self.receiver} ({self.status})'
+
+
+class DirectMessage(models.Model):
+    sender = models.ForeignKey(User, related_name='sent_direct_messages', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='received_direct_messages', on_delete=models.CASCADE)
+    body = models.TextField(max_length=1000)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_on']
+
+    def __str__(self):
+        return f'{self.sender} to {self.receiver}'

@@ -2,9 +2,9 @@ from django.shortcuts import render,get_object_or_404, HttpResponse
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .models import Post, Category, Profile
+from .models import Post, Category, Profile, Comment
 
-from .form import PostForm, EditForm
+from .form import PostForm, EditForm, CommentForm
 
 from django.urls import reverse_lazy, reverse
 
@@ -12,6 +12,7 @@ from django.http import HttpResponseRedirect
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 from django.db.models import Value as V
 
@@ -104,7 +105,24 @@ class postDetailview(DetailView):
         context["cat_menu"] = cat_menu
         context["total_likes"] = total_likes  # Basically the variables inside are passed through context
         context["liked"] = liked              # Now we can use this liked variable on our actual html page
+        context["comments"] = stuff.comments.select_related('author').all()
+        context["comment_form"] = CommentForm()
         return context    
+
+
+@login_required
+def add_comment(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+
+    return HttpResponseRedirect(reverse('post_details', args=[str(pk)]))
 
 class postAddview(CreateView):
     model=Post

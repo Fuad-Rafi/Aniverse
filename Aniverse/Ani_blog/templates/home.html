@@ -2,24 +2,46 @@
 {% load static %}
 {% block title %}Aniverse Home{% endblock %}
 
+{% block extra_head %}
+<style>
+  @media (max-width: 991px) {
+    .app-sidebar {
+      display: block !important;
+      width: 280px !important;
+    }
+
+    .app-right-sidebar {
+      display: block !important;
+      width: 280px !important;
+    }
+
+    .app-main-content {
+      margin-left: 280px !important;
+      margin-right: 280px !important;
+      max-width: calc(100% - 560px) !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .app-sidebar,
+    .app-right-sidebar {
+      display: block !important;
+    }
+
+    .app-main-content {
+      margin-left: 280px !important;
+      margin-right: 280px !important;
+      max-width: calc(100% - 560px) !important;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block topbar_right_content %}
   <form method="get" action="{% url 'search' %}" class="social-top-search">
     <i class="bi bi-search"></i>
     <input type="search" name="searching" placeholder="Search">
   </form>
-{% endblock %}
-
-{% block sidebar_extra %}
-  <div class="sidebar-divider"></div>
-  {% if user.is_authenticated %}
-    <form method="post" action="{% url 'logout' %}" class="sidebar-logout-form">
-      {% csrf_token %}
-      <button type="submit" class="sidebar-link sidebar-logout-btn">
-        <i class="bi bi-box-arrow-right"></i>
-        <span>Logout</span>
-      </button>
-    </form>
-  {% endif %}
 {% endblock %}
 
 {% block content %}
