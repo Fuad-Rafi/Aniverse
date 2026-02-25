@@ -1,434 +1,185 @@
-# Aniverse Blog Platform - Complete Project Report
+# Aniverse — Social Blogging Platform
 
-## Project Overview
+Aniverse is a full-stack Django platform where users can publish rich blog posts, build profiles, connect through friend requests, and chat with friends through direct messages.
 
-**Aniverse** is a full-featured blog platform built with Django 4.2.7. It's a comprehensive content management system (CMS) that enables users to create, manage, and interact with blog posts while providing robust user authentication and social features.
+It combines classic blogging features with social networking interactions in one clean app.
 
----
+## Highlights
 
-## Project Information
+- Rich-text blog posting with categories, snippets, and header images
+- Full authentication flow (register, login, logout, password change)
+- Personalized user profiles with bio and profile picture
+- Post likes and post comments
+- Friend request system (send, accept, pending states)
+- Friend-only direct messaging and chat conversation view
+- Search across titles, content, author fields, categories, and snippets
 
-- **Framework**: Django 4.2.7
-- **Language**: Python
-- **Database**: SQLite3
-- **Rich Text Editor**: CKEditor
-- **Project Name**: ISO (Aniverse)
-- **Applications**: ISO_Blog, members
+## Tech Stack
 
----
+- **Backend:** Django 4.2.x (Python)
+- **Database:** SQLite (default)
+- **Editor:** CKEditor (`django-ckeditor`)
+- **Media Handling:** Django media storage (`/media`)
+- **Frontend:** Django Templates + custom CSS
 
 ## Core Features
 
-### 1. **User Authentication & Management**
+### 1) Authentication & Accounts
 
-#### Registration & Login System
-- Custom user registration with enhanced signup forms
-- Secure login/logout functionality
-- Password change functionality
-- User profile creation and management
+- User registration with custom signup form
+- Login/logout using Django auth views
+- Profile/account editing
+- Password change workflow
 
-#### User Profile System
-- Individual user profiles with bio information
-- Profile picture upload support
-- Facebook URL integration
-- Profile viewing and editing capabilities
-- Dedicated profile pages for each user
+### 2) Blog System
 
----
+- Create, update, delete, and view posts
+- Rich body content via CKEditor (`RichTextField`)
+- Category-based organization
+- Snippet support for preview text
+- Optional header image uploads
 
-### 2. **Blog Post Management**
+### 3) Social Interactions
 
-#### Post Creation
-- Rich text editor (CKEditor) for formatting blog content
-- Post title and title tags
-- Post categorization
-- Snippet/excerpt support for post previews
-- Header image upload for posts
-- Auto-generated timestamps (post date)
-- Author attribution (linked to user accounts)
+- Like/unlike posts with total like count
+- Add comments on post detail pages
+- View other users’ profiles and their posts
 
-#### Post Operations
-- **Create**: Add new blog posts with full formatting
-- **Read**: View detailed post pages
-- **Update**: Edit existing posts (title, title_tag, body, snippet)
-- **Delete**: Remove posts with confirmation
+### 4) Friendship + Messaging
 
-#### Post Attributes
-- Title (max 255 characters)
-- Title Tag (SEO/metadata tag, max 255 characters)
-- Header Image (optional, uploaded to media/images/profile)
-- Body (Rich text with CKEditor support)
-- Author (foreign key to User)
-- Post Date (auto-generated)
-- Category (default: 'uncategorized')
-- Snippet (max 255 characters for previews)
-- Likes (many-to-many relationship with users)
+- Send and accept friend requests
+- Pending request tracking (incoming + sent)
+- Friends list generation from accepted requests
+- Direct messages allowed only between friends
+- Conversation view for 1:1 chat
 
----
+### 5) Search
 
-### 3. **Category System**
+Search supports:
 
-#### Category Management
-- Create custom categories for organizing posts
-- View all categories in a list
-- Filter posts by specific categories
-- Category menu displayed across the site
-- URL-friendly category names (hyphenated)
-- Default "uncategorized" category for uncategorized posts
+- post title
+- post body
+- author username / first name / last name
+- category
+- snippet
 
-#### Category Features
-- Add new categories
-- Browse posts by category
-- Category list view showing all available categories
-- Dynamic category menu in navigation
+## Project Structure
 
----
-
-### 4. **Social Interaction Features**
-
-#### Like System
-- Users can like blog posts
-- Unlike functionality (toggle likes)
-- Total likes counter for each post
-- Visual indicator showing if current user has liked a post
-- Prevents duplicate likes from same user
-- Like tracking per user
-
----
-
-### 5. **Search Functionality**
-
-#### Comprehensive Search Engine
-The platform includes an advanced search system that searches across multiple fields:
-- **Post Titles** - searches in post titles
-- **Post Content** - full-text search in post body
-- **Author Usernames** - find posts by author username
-- **Author First Names** - search by author first name
-- **Author Last Names** - search by author last name
-- **Categories** - search posts within categories
-- **Snippets** - search in post excerpts
-
-#### Search Features
-- Query validation (minimum 1 character, maximum 50 characters)
-- Protection against large query sets
-- Union of multiple search results
-- Error handling for empty queries
-- Result highlighting with query display
-
----
-
-### 6. **User Account Features**
-
-#### Profile Management
-- Create user profile (one-to-one with User model)
-- Edit profile information (bio, profile picture)
-- View other users' profiles
-- Profile picture upload
-
-#### Account Settings
-- Edit personal information (username, first name, last name, email)
-- View last login timestamp
-- View date joined
-- Account active status toggle
-- Password management
-
----
-
-### 7. **Image Handling**
-
-#### Media Management
-- Profile picture uploads
-- Post header image uploads
-- Organized media storage structure:
-  - `media/images/` - general images
-  - `media/images/profile/` - user profile pictures
-- Support for image fields with null/blank options
-
----
-
-### 8. **URL Routing & Navigation**
-
-#### Blog URLs
-- `/` - Home page (blog post listing)
-- `/post/<id>` - Individual post detail view
-- `/add_post/` - Create new post
-- `/add_category/` - Add new category
-- `/post/edit/<id>` - Edit existing post
-- `/post/<id>/remove` - Delete post
-- `/category/<name>/` - View posts by category
-- `/category-list/` - List all categories
-- `/like/<id>` - Like/unlike a post
-- `/search` - Search functionality
-
-#### Member URLs
-- `/register/` - User registration
-- `/edit_profile/` - Edit user account details
-- `/members/password/` - Change password
-- `/<id>/profile` - View user profile
-- `/<id>/edit_profile_page` - Edit profile page
-- `/create_profile_page` - Create user profile
-
----
-
-## Technical Architecture
-
-### Data Models
-
-#### Post Model
-```
-- title (CharField, max 255)
-- header_image (ImageField, optional)
-- title_tag (CharField, max 255)
-- author (ForeignKey to User)
-- body (RichTextField)
-- post_date (DateField, auto-generated)
-- category (CharField, max 255, default 'uncategorized')
-- likes (ManyToManyField with User)
-- snippet (CharField, max 255)
-```
-
-#### Category Model
-```
-- name (CharField, max 255)
-```
-
-#### Profile Model
-```
-- user (OneToOneField with User)
-- bio (TextField)
-- profile_pic (ImageField, optional)
-- fb_url (CharField, max 255)
-```
-
----
-
-### Views Architecture
-
-#### Class-Based Views
-- **ListView**: Home page with all posts ordered by date (descending)
-- **DetailView**: Individual post details with like status
-- **CreateView**: Post creation, category creation, profile creation
-- **UpdateView**: Post editing, profile editing, user account editing
-- **DeleteView**: Post deletion
-
-#### Function-Based Views
-- **LikeView**: Handles like/unlike toggle logic
-- **CategoryView**: Displays posts filtered by category
-- **CategoryListView**: Shows all available categories
-- **SearchView**: Processes search queries and returns results
-
----
-
-### Forms
-
-#### PostForm (Post Creation)
-- Title input with placeholder
-- Title tag input
-- Hidden author field (auto-populated)
-- Category dropdown (dynamic from database)
-- Rich text body with CKEditor
-- Snippet textarea
-- Header image upload
-
-#### EditForm (Post Editing)
-- Title, title_tag, body, and snippet editing
-- Simplified form focusing on content updates
-
-#### SignUpForm (User Registration)
-- Username, email, first name, last name
-- Password fields with confirmation
-- Custom styling with Bootstrap classes
-
-#### EditProfileForm (Account Editing)
-- Personal information editing
-- Last login display
-- Active status
-- Date joined display
-
----
-
-## Key Features Summary
-
-### Content Management
-✅ Create, read, update, delete blog posts  
-✅ Rich text editor for formatted content  
-✅ Category organization system  
-✅ Post snippets for previews  
-✅ Header images for posts  
-
-### User Features
-✅ User registration and authentication  
-✅ User profiles with bios and pictures  
-✅ Password management  
-✅ Profile editing  
-
-### Social Features
-✅ Like/unlike posts  
-✅ Like counter display  
-✅ Author attribution  
-✅ User profile pages  
-
-### Search & Discovery
-✅ Multi-field search engine  
-✅ Category-based browsing  
-✅ Category list view  
-✅ Latest posts ordering  
-
-### Media Management
-✅ Image upload for profiles  
-✅ Image upload for post headers  
-✅ Organized media directory structure  
-
----
-
-## User Roles & Permissions
-
-### Anonymous Users
-- View blog posts
-- View categories
-- Search posts
-- View user profiles
-
-### Authenticated Users
-- All anonymous user capabilities
-- Create blog posts
-- Edit own posts
-- Delete own posts
-- Like/unlike posts
-- Create/edit profile
-- Change password
-- Add categories
-
-### Admin Users
-- Full administrative access via Django admin panel
-- Manage all users, posts, categories, and profiles
-
----
-
-## Technology Stack
-
-### Backend
-- **Django 4.2.7** - Web framework
-- **Python** - Programming language
-- **SQLite3** - Database (development)
-
-### Frontend
-- **Django Templates** - Template engine
-- **Bootstrap** - CSS framework (based on form classes)
-- **HTML/CSS** - Standard web technologies
-
-### Third-Party Packages
-- **django-ckeditor** - Rich text editor for post content
-
-### File Structure
-```
+```text
 Aniverse/
-├── db.sqlite3 - Database
-├── manage.py - Django management script
-├── ISO/ - Main project configuration
-│   ├── settings.py - Project settings
-│   ├── urls.py - Root URL configuration
-│   ├── wsgi.py - WSGI configuration
-│   └── asgi.py - ASGI configuration
-├── ISO_Blog/ - Blog application
-│   ├── models.py - Post, Category, Profile models
-│   ├── views.py - Blog views and logic
-│   ├── urls.py - Blog URL patterns
-│   ├── form.py - Post forms
-│   ├── admin.py - Admin configuration
-│   ├── templates/ - Blog templates
-│   └── migrations/ - Database migrations
-├── members/ - User management application
-│   ├── views.py - User authentication views
-│   ├── forms.py - User forms
-│   ├── urls.py - Member URL patterns
-│   └── templates/registration/ - Auth templates
-├── media/ - Uploaded media files
-│   └── images/ - User uploaded images
-└── static/ - Static files
-    └── images/ - Static images
+├─ Ani_blog/                # Blog app (posts, categories, comments, social models)
+├─ members/                 # User/account/friend/chat flows
+├─ Aniverse/                # Project settings and root URLs
+├─ static/                  # CSS + static assets
+├─ media/                   # Uploaded images
+├─ manage.py
+└─ db.sqlite3
 ```
 
+## Data Models (Key)
+
+- **Post**: title, title_tag, author, body, post_date, category, snippet, header_image, likes
+- **Category**: name
+- **Profile**: user, bio, profile_pic, fb_url
+- **Comment**: post, author, body, created_on
+- **FriendRequest**: sender, receiver, status (`pending|accepted|rejected`), timestamps
+- **DirectMessage**: sender, receiver, body, created_on
+
+## Main Routes
+
+### Auth + Members
+
+- `/` → login page
+- `/members/register/` → register
+- `/members/edit_profile/` → edit account
+- `/members/password/` → change password
+- `/members/my_profile/` → redirect to your profile/create profile
+- `/members/friend-requests/` → incoming/sent requests + friends list
+- `/members/friend-request/send/<user_id>/`
+- `/members/friend-request/accept/<request_id>/`
+- `/members/chat/<user_id>/` → chat conversation
+- `/members/chat/send/<user_id>/` → send DM
+
+### Blog
+
+- `/home/` → post feed
+- `/home/post/<pk>` → post detail
+- `/home/add_post/` → create post
+- `/home/post/edit/<pk>` → edit post
+- `/home/post/<pk>/remove` → delete post
+- `/home/post/<pk>/comment/` → add comment
+- `/home/add_category/` → add category
+- `/home/category/<cats>/` → category feed
+- `/home/category-list/` → all categories
+- `/home/like/<pk>` → like/unlike
+- `/home/search` → search
+
+## Getting Started
+
+### 1) Clone and enter project
+
+```bash
+git clone <your-repo-url>
+cd Aniverse
+```
+
+### 2) Create virtual environment
+
+```bash
+python -m venv .venv
+```
+
+Activate:
+
+- **Windows (PowerShell):**
+  ```powershell
+  .\.venv\Scripts\Activate.ps1
+  ```
+- **macOS/Linux:**
+  ```bash
+  source .venv/bin/activate
+  ```
+
+### 3) Install dependencies
+
+```bash
+pip install django django-ckeditor pillow
+```
+
+### 4) Run migrations
+
+```bash
+python manage.py migrate
+```
+
+### 5) (Optional) Create admin user
+
+```bash
+python manage.py createsuperuser
+```
+
+### 6) Start development server
+
+```bash
+python manage.py runserver
+```
+
+Open:
+
+- `http://127.0.0.1:8000/` (login)
+- `http://127.0.0.1:8000/home/` (after login)
+
+## Configuration Notes
+
+- `DEBUG=True` is for development only.
+- Default DB is SQLite (`db.sqlite3`).
+- Uploaded files are served from `/media/` in development.
+- Static files are loaded from `/static/`.
+
+## Why Aniverse Stands Out
+
+Aniverse is not just a CRUD blog. It blends content creation, profile identity, friendship relationships, and direct messaging in one cohesive Django project—making it a strong portfolio-grade social platform.
+
 ---
 
-## Database Schema
-
-### Tables
-1. **auth_user** - Django's built-in user model
-2. **ISO_Blog_post** - Blog posts
-3. **ISO_Blog_category** - Post categories
-4. **ISO_Blog_profile** - User profiles
-5. **ISO_Blog_post_likes** - Many-to-many table for post likes
-
----
-
-## Security Features
-
-- CSRF protection (Django built-in)
-- Password hashing (Django authentication system)
-- User authentication required for post creation/editing
-- Form validation
-- Query length limits in search (protection against large datasets)
-- Hidden author field to prevent tampering
-
----
-
-## Current Limitations & Notes
-
-1. **Development Mode**: DEBUG is set to True (not production-ready)
-2. **Secret Key**: Currently exposed in settings.py (should be environment variable)
-3. **Database**: Using SQLite (suitable for development, may need PostgreSQL/MySQL for production)
-4. **Media Files**: Served by Django (should use CDN or separate media server in production)
-
----
-
-## Future Enhancement Possibilities
-
-- Comment system on blog posts
-- Tags in addition to categories
-- Draft/publish status for posts
-- Post scheduling
-- Email notifications
-- RSS feed
-- Social media sharing buttons
-- Analytics dashboard
-- Advanced user roles (moderators, contributors)
-- Post ratings
-- Related posts suggestions
-- Archive by date
-- Pagination for large post lists
-
----
-
-## Use Cases
-
-This platform is ideal for:
-- Personal blogging
-- Multi-author blog sites
-- Content management for small to medium organizations
-- Community blogging platforms
-- Educational content sharing
-- Portfolio websites with blog functionality
-- News/magazine style websites
-
----
-
-## Conclusion
-
-**Aniverse** is a robust, feature-complete blog platform that provides all essential blogging functionality with user management, social features, and content organization. It follows Django best practices and implements a clean MVC architecture suitable for further development and customization.
-
-The project demonstrates proficiency in:
-- Django framework (models, views, templates, forms, authentication)
-- Database design and relationships
-- User authentication and authorization
-- File upload handling
-- Search functionality implementation
-- Social features (likes)
-- Clean URL design
-- Form handling and validation
-
----
-
-*Report Generated: January 14, 2026*  
-*Project: Aniverse (ISO Blog Platform)*  
-*Django Version: 4.2.7*
+If you want, I can also generate a matching `requirements.txt` and a short API/routes reference table to make this project even more recruiter-friendly.
