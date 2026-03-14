@@ -181,7 +181,7 @@ Open:
 This project now includes production-oriented settings for Vercel with:
 
 - **Neon PostgreSQL** via `DATABASE_URL`
-- **AWS S3** media storage via `django-storages`
+- **Cloudinary** media storage via `django-cloudinary-storage`
 - Environment-driven security settings
 
 ### 1) Install dependencies
@@ -201,11 +201,10 @@ Required in Vercel project settings:
 - `ALLOWED_HOSTS=.vercel.app,your-domain.com`
 - `CSRF_TRUSTED_ORIGINS=https://*.vercel.app,https://your-domain.com`
 - `DATABASE_URL` (Neon connection string)
-- `USE_S3=True`
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-- `AWS_STORAGE_BUCKET_NAME`
-- `AWS_S3_REGION_NAME`
+- `USE_CLOUDINARY=True`
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
 
 Optional hardening vars:
 
@@ -233,7 +232,7 @@ python manage.py collectstatic --noinput
 ### 5) Post-deploy validation
 
 - Confirm database writes persist after redeploy (Neon).
-- Confirm uploaded images persist and load from S3.
+- Confirm uploaded images persist and load from Cloudinary.
 - Confirm `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` include your production domains.
 
 ## Why Aniverse Stands Out
