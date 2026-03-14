@@ -1,15 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "builds": [
-    {
-      "src": "Aniverse/wsgi.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "Aniverse/wsgi.py"
-    }
+  "buildCommand": "python manage.py collectstatic --no-input",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index" }
   ]
 }
