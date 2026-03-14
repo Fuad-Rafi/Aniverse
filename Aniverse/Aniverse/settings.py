@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 
 
 def env_bool(name, default=False):
@@ -104,15 +104,11 @@ DATABASES = {
     }
 }
 
-DATABASE_URL = os.getenv('DATABASE_URL', '')
+DATABASE_URL = os.getenv('DATABASE_URL', '').strip()
 if DATABASE_URL:
-    try:
-        import dj_database_url
+    import dj_database_url
 
-        DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
-    except ImportError:
-        # Keeps local development working until dependencies are installed.
-        pass
+    DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
 
 
 # Password validation
