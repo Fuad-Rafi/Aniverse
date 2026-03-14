@@ -176,6 +176,66 @@ Open:
 - Uploaded files are served from `/media/` in development.
 - Static files are loaded from `/static/`.
 
+## Deploying to Vercel
+
+This project now includes production-oriented settings for Vercel with:
+
+- **Neon PostgreSQL** via `DATABASE_URL`
+- **AWS S3** media storage via `django-storages`
+- Environment-driven security settings
+
+### 1) Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2) Configure environment variables
+
+Use [.env.example](.env.example) as reference.
+
+Required in Vercel project settings:
+
+- `SECRET_KEY`
+- `DEBUG=False`
+- `ALLOWED_HOSTS=.vercel.app,your-domain.com`
+- `CSRF_TRUSTED_ORIGINS=https://*.vercel.app,https://your-domain.com`
+- `DATABASE_URL` (Neon connection string)
+- `USE_S3=True`
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `AWS_STORAGE_BUCKET_NAME`
+- `AWS_S3_REGION_NAME`
+
+Optional hardening vars:
+
+- `SECURE_SSL_REDIRECT=True`
+- `SESSION_COOKIE_SECURE=True`
+- `CSRF_COOKIE_SECURE=True`
+- `SECURE_HSTS_SECONDS=31536000`
+- `SECURE_HSTS_INCLUDE_SUBDOMAINS=True`
+- `SECURE_HSTS_PRELOAD=True`
+
+### 3) Run migration/static checks locally
+
+```bash
+python manage.py check --deploy
+python manage.py collectstatic --noinput
+```
+
+### 4) Deploy
+
+- Ensure [vercel.json](vercel.json) is in the project root.
+- Import the repository into Vercel.
+- Add all environment variables in the Vercel dashboard.
+- Trigger deployment and verify login, post CRUD, friend requests, chat, and image upload flows.
+
+### 5) Post-deploy validation
+
+- Confirm database writes persist after redeploy (Neon).
+- Confirm uploaded images persist and load from S3.
+- Confirm `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` include your production domains.
+
 ## Why Aniverse Stands Out
 
 Aniverse is not just a CRUD blog. It blends content creation, profile identity, friendship relationships, and direct messaging in one cohesive Django project—making it a strong portfolio-grade social platform.
