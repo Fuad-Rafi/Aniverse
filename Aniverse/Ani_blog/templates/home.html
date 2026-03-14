@@ -49,7 +49,11 @@
     <section class="composer-card">
       <div class="composer-left">
         <div class="avatar-mini">
-          <i class="bi bi-person-fill"></i>
+          {% if user.profile.profile_pic %}
+            <img src="{{ user.profile.profile_pic.url }}" alt="{{ user.get_full_name|default:user.username }}" class="avatar-mini-img">
+          {% else %}
+            <i class="bi bi-person-fill"></i>
+          {% endif %}
         </div>
         <div class="composer-user-info">
           <h5>{{ user.first_name }} {{ user.last_name|default:user.username }}</h5>
@@ -63,7 +67,11 @@
       <article class="feed-card">
         <div class="feed-card-head">
           <div class="avatar-mini">
-            <i class="bi bi-person-fill"></i>
+            {% if post.author.profile.profile_pic %}
+              <img src="{{ post.author.profile.profile_pic.url }}" alt="{{ post.author.get_full_name|default:post.author.username }}" class="avatar-mini-img">
+            {% else %}
+              <i class="bi bi-person-fill"></i>
+            {% endif %}
           </div>
           <div>
             <h4>{{ post.author.first_name }} {{ post.author.last_name|default:post.author.username }}</h4>

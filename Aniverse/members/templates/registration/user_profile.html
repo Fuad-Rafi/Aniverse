@@ -45,7 +45,7 @@
     </div>
 
     <header class="page-header">
-        <h2 class="page-title">Posts by {{ page_user.user.username }}</h2>
+        <h2 class="page-title">Posts by {{ page_user.user.get_full_name|default:page_user.user.username }}</h2>
     </header>
 
     <ul class="list-clean">

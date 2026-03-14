@@ -63,6 +63,7 @@
           <i class="bi bi-gear-fill"></i>
           <span>Settings</span>
         </a>
+        {% if user.is_superuser %}
         <a href="{% url 'add_category' %}" class="sidebar-link">
           <i class="bi bi-plus-circle-fill"></i>
           <span>Add Category</span>
@@ -71,6 +72,7 @@
           <i class="bi bi-shield-fill-check"></i>
           <span>Admin Panel</span>
         </a>
+        {% endif %}
         <div class="sidebar-divider"></div>
         {% if user.is_authenticated %}
           <form method="post" action="{% url 'logout' %}" class="sidebar-logout-form">
@@ -103,8 +105,12 @@
         <div class="chat-friends-list">
           {% for friend in chat_friends %}
             <a href="{% url 'chat_conversation' friend.id %}" class="sidebar-link chat-friend-link {% if active_chat_user and active_chat_user.id == friend.id %}active{% endif %}">
+              {% if friend.profile.profile_pic %}
+              <img src="{{ friend.profile.profile_pic.url }}" alt="{{ friend.get_full_name|default:friend.username }}" class="sidebar-avatar">
+              {% else %}
               <i class="bi bi-person-circle"></i>
-              <span>{{ friend.username }}</span>
+              {% endif %}
+              <span>{{ friend.first_name }} {{ friend.last_name }}</span>
             </a>
           {% empty %}
             <div class="sidebar-link chat-placeholder-row">
