@@ -1,4 +1,4 @@
-# Aniverse — Social Blogging Platform
+# Aniverse : Social Blogging Platform
 
 Aniverse is a full-stack Django platform where users can publish rich blog posts, build profiles, connect through friend requests, and chat with friends through direct messages.
 
