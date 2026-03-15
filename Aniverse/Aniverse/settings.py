@@ -150,7 +150,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Manifest storage is strict and can error if a manifest file is missing.
+# Default to the safer compressed storage unless explicitly enabled.
+if env_bool('USE_MANIFEST_STATICFILES', False):
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 if USE_CLOUDINARY:
     CLOUDINARY_STORAGE = {
