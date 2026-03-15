@@ -196,3 +196,11 @@ LOGIN_URL="login"
 LOGIN_REDIRECT_URL="Home"
 
 LOGOUT_REDIRECT_URL="/"
+
+# Auto-create superuser on first deploy
+if os.getenv('CREATE_SUPERUSER'):
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    if not User.objects.filter(username='superfuad').exists():
+        User.objects.create_superuser('superfuad', 'admin@example.com', 'Super1234Fuad#')
+        print("✅ Superuser 'superfuad' created!")
