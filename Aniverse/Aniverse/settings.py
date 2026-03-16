@@ -170,8 +170,10 @@ if USE_CLOUDINARY:
 
     if all(CLOUDINARY_STORAGE.values()):
         DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-        MEDIA_URL = '/media/'
+        # Use direct Cloudinary CDN URL for media
+        MEDIA_URL = f"https://res.cloudinary.com/{CLOUDINARY_STORAGE['CLOUD_NAME']}/"
     else:
+        # Fallback to local storage if Cloudinary vars missing
         MEDIA_URL = '/media/'
         MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 else:

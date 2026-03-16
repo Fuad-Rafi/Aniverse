@@ -28,5 +28,6 @@ urlpatterns = [
     path('members/', include('members.urls')),
 ]
 
-if settings.DEBUG:
+# Serve media files only in DEBUG mode or when not using Cloudinary
+if settings.DEBUG or not settings.USE_CLOUDINARY:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
