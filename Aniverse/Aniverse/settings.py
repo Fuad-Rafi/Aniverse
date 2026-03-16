@@ -56,7 +56,7 @@ INSTALLED_APPS = [
 
 ]
 
-USE_CLOUDINARY = env_bool('USE_CLOUDINARY', False)
+USE_CLOUDINARY = env_bool('USE_CLOUDINARY', True)
 
 if USE_CLOUDINARY:
     INSTALLED_APPS.extend(['cloudinary_storage', 'cloudinary'])
