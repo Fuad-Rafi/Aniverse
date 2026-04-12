@@ -190,7 +190,7 @@ CLOUDINARY_CONFIGURED = bool(CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CL
 if USE_CLOUDINARY and CLOUDINARY_CONFIGURED:
     # Use Cloudinary for media storage
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    MEDIA_URL = f"https://res.cloudinary.com/{CLOUDINARY_CLOUD_NAME}/"
+    MEDIA_URL = f"https://res.cloudinary.com/{CLOUDINARY_CLOUD_NAME}/image/upload/"
 else:
     # Fallback to local storage if Cloudinary not configured
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
