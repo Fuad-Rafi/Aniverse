@@ -187,15 +187,27 @@ CLOUDINARY_STORAGE = {
 # Check if all Cloudinary credentials are properly set
 CLOUDINARY_CONFIGURED = bool(CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET)
 
+# DEBUG: Log what's happening
+if not DEBUG:
+    print(f"[CLOUDINARY DEBUG] CLOUD_NAME: {'SET' if CLOUDINARY_CLOUD_NAME else 'NOT SET'}")
+    print(f"[CLOUDINARY DEBUG] API_KEY: {'SET' if CLOUDINARY_API_KEY else 'NOT SET'}")
+    print(f"[CLOUDINARY DEBUG] API_SECRET: {'SET' if CLOUDINARY_API_SECRET else 'NOT SET'}")
+    print(f"[CLOUDINARY DEBUG] CLOUDINARY_CONFIGURED: {CLOUDINARY_CONFIGURED}")
+    print(f"[CLOUDINARY DEBUG] USE_CLOUDINARY: {USE_CLOUDINARY}")
+
 if USE_CLOUDINARY and CLOUDINARY_CONFIGURED:
     # Use Cloudinary for media storage
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
     MEDIA_URL = f"https://res.cloudinary.com/{CLOUDINARY_CLOUD_NAME}/image/upload/"
+    if not DEBUG:
+        print(f"[CLOUDINARY] ✅ USING CLOUDINARY - MEDIA_URL: {MEDIA_URL}")
 else:
     # Fallback to local storage if Cloudinary not configured
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    if not DEBUG:
+        print(f"[CLOUDINARY] ❌ FALLING BACK TO LOCAL /media/")
 
 # Production security settings can be toggled with env vars.
 SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', not DEBUG)
