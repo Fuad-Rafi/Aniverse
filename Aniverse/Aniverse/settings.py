@@ -161,22 +161,21 @@ if env_bool('USE_MANIFEST_STATICFILES', False):
 else:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-if USE_CLOUDINARY:
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', ''),
-        'API_KEY': os.getenv('CLOUDINARY_API_KEY', ''),
-        'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', ''),
-    }
+# Cloudinary Configuration for Media Storage
+CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME', '').strip()
+CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY', '').strip()
+CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET', '').strip()
 
-    if all(CLOUDINARY_STORAGE.values()):
-        DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-        # Use direct Cloudinary CDN URL for media
-        MEDIA_URL = f"https://res.cloudinary.com/{CLOUDINARY_STORAGE['CLOUD_NAME']}/"
-    else:
-        # Fallback to local storage if Cloudinary vars missing
-        MEDIA_URL = '/media/'
-        MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Check if all Cloudinary credentials are properly set
+CLOUDINARY_CONFIGURED = bool(CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET)
+
+if USE_CLOUDINARY and CLOUDINARY_CONFIGURED:
+    # Use Cloudinary for media storage
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    MEDIA_URL = f"https://res.cloudinary.com/{CLOUDINARY_CLOUD_NAME}/"
 else:
+    # Fallback to local storage if Cloudinary not configured
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
