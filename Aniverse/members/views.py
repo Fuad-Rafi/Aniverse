@@ -265,3 +265,16 @@ class UserEditView(generic.UpdateView):
 
     def get_object(self):
         return self.request.user
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        # Save profile picture if provided
+        profile_pic = form.cleaned_data.get('profile_pic')
+        if profile_pic:
+            profile = Profile.objects.filter(user=self.request.user).first()
+            if profile:
+                profile.profile_pic = profile_pic
+                profile.save()
+
+        return response

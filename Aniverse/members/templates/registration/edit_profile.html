@@ -9,7 +9,7 @@
     </header>
 
     <div class="panel-card">
-        <form method='POST' class="app-form">
+        <form method='POST' class="app-form" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
             <div class="app-actions">
