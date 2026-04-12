@@ -63,15 +63,17 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',  # Must be BEFORE staticfiles
-    'cloudinary',
     'django.contrib.staticfiles',
     'Ani_blog.apps.IsoBlogConfig',
     'members',
     'ckeditor',
+
 ]
 
 USE_CLOUDINARY = env_bool('USE_CLOUDINARY', True)
+
+if USE_CLOUDINARY:
+    INSTALLED_APPS.extend(['cloudinary_storage', 'cloudinary'])
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
