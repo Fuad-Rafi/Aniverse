@@ -167,10 +167,14 @@ STATICFILES_DIRS = [
 
 # Manifest storage is strict and can error if a manifest file is missing.
 # Default to the safer compressed storage unless explicitly enabled.
-if env_bool('USE_MANIFEST_STATICFILES', False):
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-else:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage" if env_bool('USE_MANIFEST_STATICFILES', False) else "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 
 # Cloudinary Configuration for Media Storage
 USE_CLOUDINARY = env_bool('USE_CLOUDINARY', True)
@@ -178,11 +182,10 @@ CLOUDINARY_URL = os.getenv('CLOUDINARY_URL', '').strip()
 
 if USE_CLOUDINARY and CLOUDINARY_URL:
     # Use Cloudinary for media storage (automatically configured via CLOUDINARY_URL)
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    STORAGES["default"]["BACKEND"] = "cloudinary_storage.storage.MediaCloudinaryStorage"
     MEDIA_URL = '/media/'  # Let django-cloudinary-storage handle the URL
 else:
     # Fallback to local storage if Cloudinary not configured
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
